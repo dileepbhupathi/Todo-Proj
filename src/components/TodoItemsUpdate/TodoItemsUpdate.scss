@@ -1,0 +1,26 @@
+.items-update-container {
+    display: flex;
+    justify-content: space-between;
+    box-sizing: border-box;
+    // border: 1px solid gray;
+}
+
+.todo-items-update-buttons {
+    border: 0px solid;
+    box-sizing: border-box;
+}
+
+.todo-items-update-buttons:hover {
+    border: 1px solid gray;
+    border-color: gray;
+    color: black;
+    box-sizing: border-box;
+}
+
+.todo-items-clear-buttons {
+    border:  0px solid;
+}
+
+.todo-items-clear-buttons:hover {
+    text-decoration: underline;
+}

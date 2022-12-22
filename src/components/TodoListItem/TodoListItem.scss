@@ -1,6 +1,8 @@
 .list-item-text {
     text-align: left;
-    text-decoration:line-through;
+    text-decoration: solid underline 2px;
+    text-underline-offset: -45%;
+    text-decoration-skip-ink: none;
 }
 
 .list-item-text-unchecked {

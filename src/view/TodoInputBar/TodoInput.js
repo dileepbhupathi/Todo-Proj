@@ -6,40 +6,24 @@ import { TodoList } from "../../components/TodoList/TodoList";
 import { TfiAngleDown } from "react-icons/tfi";
 import { TodoItemsUpdate } from "../../components/TodoItemsUpdate/TodoItemsUpdate";
 
-export const TodoInput = () => {
-
+export const TodoInput = ({ todoData, setTodoData , isData,setIsData }) => {
   const { Text } = Typography;
-
 
   const [todoform] = Form.useForm();
 
-  const [isData, setIsData] = useState(false);
+const [isChecked, setIsChecked] = useState(false);
+
+
+
+  // const [allChecked, setAllChecked] = useState(false);
 
 
 
   const content = <pre className="input-prefix">{"    "}</pre>;
 
-  const [todoData, setTodoData] = useState([]);
-
-  // const LoadedTodoData = () => {
-  //   const request = indexedDB.open("TodoProj", 2);
-
-  //   request.onsuccess = () => {
-  //     const db = request.result;
-
-  //     const loadedIDB = db.transaction(["todoListData"], "readwrite")
-  //       .objectStore("todoListData")
-  //       .getAll();
-  //     loadedIDB.onsuccess = (event) => {
-  //       let loadedIDBData = event.target.result
-  //       setTodoData(loadedIDBData)
-  //     }
-  //   };
-  // }
-
-  // window.onload = LoadedTodoData()
-
   const TodoSubmit = (value) => {
+    todoform.resetFields();
+
     const request = indexedDB.open("TodoProj", 2);
 
     //  create the Contacts object store and indexes
@@ -93,13 +77,14 @@ export const TodoInput = () => {
       gettingTodoData.onsuccess = function (event) {
         const todoDataFromIDB = event.target.result;
         setTodoData(todoDataFromIDB);
-        setIsData(true);
+        if (todoDataFromIDB.length < 1) {
+          setIsData(false);
+        } else {
+          setIsData(true);
+        }
       };
     };
-
-    todoform.resetFields();
   };
-
 
   const AllItems = () => {
     const request = indexedDB.open("TodoProj", 2);
@@ -107,13 +92,15 @@ export const TodoInput = () => {
     request.onsuccess = () => {
       const db = request.result;
 
-      const getAllIDB = db.transaction(["todoListData"], "readwrite")
+      const getAllIDB = db
+        .transaction(["todoListData"], "readwrite")
         .objectStore("todoListData")
         .getAll();
       getAllIDB.onsuccess = (event) => {
-        let getAllIDBData = event.target.result
-        setTodoData(getAllIDBData)
-      }
+        let getAllIDBData = event.target.result;
+        setIsData(true);
+        setTodoData(getAllIDBData);
+      };
     };
   };
 
@@ -123,22 +110,28 @@ export const TodoInput = () => {
     request.onsuccess = () => {
       const db = request.result;
 
-      const getActiveDB = db.transaction(["todoListData"], "readwrite")
+      const getActiveDB = db
+        .transaction(["todoListData"], "readwrite")
         .objectStore("todoListData")
         .getAll();
       getActiveDB.onsuccess = (event) => {
-        let getActiveDBData = event.target.result
+        let getActiveDBData = event.target.result;
         let activeData = [];
-        getActiveDBData.forEach(element => {
+        getActiveDBData.forEach((element) => {
           if (element.isChecked === false) {
-            activeData.push(element)
+            activeData.push(element);
           }
         });
-        console.log(activeData)
-        setTodoData(activeData)
-      }
+        console.log(activeData);
+        setTodoData(activeData);
+        if (getActiveDBData.length === 0) {
+          setIsData(false);
+        } else {
+          setIsData(true);
+        }
+      };
     };
-  }
+  };
 
   const completedItems = () => {
     const request = indexedDB.open("TodoProj", 2);
@@ -146,22 +139,28 @@ export const TodoInput = () => {
     request.onsuccess = () => {
       const db = request.result;
 
-      const getActiveDB = db.transaction(["todoListData"], "readwrite")
+      const getCompleteDB = db
+        .transaction(["todoListData"], "readwrite")
         .objectStore("todoListData")
         .getAll();
-      getActiveDB.onsuccess = (event) => {
-        let getActiveDBData = event.target.result
+      getCompleteDB.onsuccess = (event) => {
+        let getCompleteDBData = event.target.result;
         let completedData = [];
-        getActiveDBData.forEach(element => {
+        getCompleteDBData.forEach((element) => {
           if (element.isChecked === true) {
-            completedData.push(element)
+            completedData.push(element);
           }
         });
-        console.log(completedData)
-        setTodoData(completedData)
-      }
+        console.log(completedData);
+        setTodoData(completedData);
+        if (completedData.length < 1) {
+          setIsData(false);
+        } else {
+          setIsData(true);
+        }
+      };
     };
-  }
+  };
 
   const clearCompletedItems = () => {
     const request = indexedDB.open("TodoProj", 2);
@@ -169,30 +168,76 @@ export const TodoInput = () => {
     request.onsuccess = () => {
       const db = request.result;
 
-      const getClearCompleted = db.transaction(["todoListData"], "readwrite")
+      const getClearCompleted = db
+        .transaction(["todoListData"], "readwrite")
         .objectStore("todoListData")
         .getAll();
       getClearCompleted.onsuccess = (event) => {
-        let getClearCompletedData = event.target.result
-        getClearCompletedData.forEach(element => {
+        let getClearCompletedData = event.target.result;
+        getClearCompletedData.forEach((element) => {
           if (element.isChecked === true) {
             db.transaction(["todoListData"], "readwrite")
-            .objectStore("todoListData")
-            .delete(element.index);
+              .objectStore("todoListData")
+              .delete(element.index);
           }
         });
-        let finallIDB = db.transaction(["todoListData"], "readwrite")
-            .objectStore("todoListData")
-            .getAll();
-         finallIDB.onsuccess = (e) => {
-            let finallIDBData = e.target.result
-        setTodoData(finallIDBData)
-
+        let finallIDB = db
+          .transaction(["todoListData"], "readwrite")
+          .objectStore("todoListData")
+          .getAll();
+        finallIDB.onsuccess = (e) => {
+          let finallIDBData = e.target.result;
+          setTodoData(finallIDBData);
+          if (finallIDBData.length < 1) {
+            setIsData(false);
+          } else {
+            setIsData(true);
           }
+        };
         // console.log(completedData)
-      }
+      };
     };
-  }
+  };
+
+  const allTodoItemsChecked = () => {
+    const request = indexedDB.open("TodoProj", 2);
+
+    request.onsuccess = () => {
+      const db = request.result;
+
+      const todoAllCheckedIDB = db
+        .transaction(["todoListData"], "readwrite")
+        .objectStore("todoListData")
+        .getAll();
+      
+        todoAllCheckedIDB.onsuccess = (e) => {
+          let todoAllCheckedIDBData = e.target.result
+          let allCheckedData = []
+          todoAllCheckedIDBData.forEach(each => {
+            each.isChecked = !isChecked
+            console.log('.....',each)
+            
+            allCheckedData.push(each)
+            setTodoData(allCheckedData)
+            db.transaction(["todoListData"], "readwrite")
+            .objectStore("todoListData")
+            .put(each);
+            setIsChecked(!isChecked)
+          })
+          // const todocheckedIDB = db
+          // .transaction(["todoListData"], "readwrite")
+          // .objectStore("todoListData")
+          // .getAll();
+        //   todocheckedIDB.onsuccess = (e) => {
+        //     let todocheckedIDBData = e.target.result 
+        //     
+        //   }
+        }
+
+    };
+  };
+
+  console.log('/////',todoData)
 
   return (
     <div className="todo-input-container">
@@ -213,25 +258,24 @@ export const TodoInput = () => {
                 isData ? (
                   <TfiAngleDown
                     className="down-angle"
-                    // onClick={allTodoItemsChecked}
+                    onClick={allTodoItemsChecked}
                   />
                 ) : (
                   content
                 )
               }
-              // defaultValue=""
             />
           </Form.Item>
         </Form>
-        <TodoList
-          todoData={todoData}
-          setTodoData={setTodoData}
-        />
+        {isData ? (
+          <TodoList todoData={todoData} setTodoData={setTodoData} isChecked = {isChecked} setIsChecked = {setIsChecked}/>
+        ) : null}
+
         <TodoItemsUpdate
-        AllItems={AllItems}
-        activeItems = {activeItems}
-        completedItems = {completedItems}
-        clearCompletedItems = {clearCompletedItems}
+          AllItems={AllItems}
+          activeItems={activeItems}
+          completedItems={completedItems}
+          clearCompletedItems={clearCompletedItems}
         />
       </div>
     </div>

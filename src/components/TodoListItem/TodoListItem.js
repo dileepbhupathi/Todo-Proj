@@ -2,20 +2,16 @@ import { Checkbox, List } from "antd";
 import { RxCross2 } from "react-icons/rx";
 import "./TodoListItem.scss";
 
-import React, { useState } from "react";
+import React from "react";
 
 export const TodoListItem = ({
   item,
   i,
   setTodoData,
-  isChecked,
-  setIsChecked,
 }) => {
-  const [isDone, setIsDone] = useState(item.isChecked);
 
   const todoItemRemove = (i) => {
     console.log(item);
-    // let iDBData = todoData
     const request = indexedDB.open("TodoProj", 2);
 
     request.onsuccess = () => {
@@ -34,12 +30,10 @@ export const TodoListItem = ({
         setTodoData(updatedIDBTodoData);
       };
     };
-    if (isChecked) {
-      setIsChecked(!isChecked);
-    }
   };
 
   const checkedItem = () => {
+    
     const request = indexedDB.open("TodoProj", 2);
 
     request.onsuccess = () => {
@@ -51,16 +45,18 @@ export const TodoListItem = ({
 
       iDBItem.onsuccess = (e) => {
         let iDBItemData = e.target.result;
-        iDBItemData.isChecked = !isChecked;
-        db.transaction(["todoListData"], "readwrite")
+        if (iDBItemData.isChecked === true) {
+          iDBItemData.isChecked = false
+          db.transaction(["todoListData"], "readwrite")
           .objectStore("todoListData")
           .put(iDBItemData);
-        if (iDBItemData.isChecked === true) {
-          setIsChecked(true);
-        } else {
-          setIsChecked(false);
         }
-        setIsDone(!isDone);
+        else {
+          iDBItemData.isChecked = true
+          db.transaction(["todoListData"], "readwrite")
+          .objectStore("todoListData")
+          .put(iDBItemData);
+        }
         let todoUpdatedIDB = db
           .transaction(["todoListData"], "readwrite")
           .objectStore("todoListData")
@@ -68,6 +64,7 @@ export const TodoListItem = ({
           todoUpdatedIDB.onsuccess = (e) => {
             let todoUpdatedIDBData = e.target.result
             setTodoData(todoUpdatedIDBData)
+            
           }
       };
     };
@@ -77,7 +74,6 @@ export const TodoListItem = ({
     <List.Item key={item.id}>
       <Checkbox
         checked={item.isChecked}
-        // indeterminate = {isChecked}
         onClick={() => {
           checkedItem();
         }}

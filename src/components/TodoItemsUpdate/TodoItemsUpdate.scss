@@ -19,6 +19,11 @@
 
 .todo-items-clear-buttons {
     border:  0px solid;
+    visibility: none;
+}
+
+.todo-items-no-clear-buttons {
+    visibility: hidden;
 }
 
 .todo-items-clear-buttons:hover {

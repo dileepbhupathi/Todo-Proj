@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "./TodoInput.scss";
 import { v4 as uuid } from "uuid";
 import { Typography, Input, Form } from "antd";
@@ -6,16 +6,10 @@ import { TodoList } from "../../components/TodoList/TodoList";
 import { TfiAngleDown } from "react-icons/tfi";
 import { TodoItemsUpdate } from "../../components/TodoItemsUpdate/TodoItemsUpdate";
 
-export const TodoInput = ({ todoData, setTodoData , isData,setIsData }) => {
+export const TodoInput = ({ todoData, setTodoData, isData, setIsData,isChecked,setIsChecked }) => {
   const { Text } = Typography;
 
   const [todoform] = Form.useForm();
-
-const [isChecked, setIsChecked] = useState(false);
-
-
-
-  // const [allChecked, setAllChecked] = useState(false);
 
 
 
@@ -209,35 +203,32 @@ const [isChecked, setIsChecked] = useState(false);
         .transaction(["todoListData"], "readwrite")
         .objectStore("todoListData")
         .getAll();
-      
-        todoAllCheckedIDB.onsuccess = (e) => {
-          let todoAllCheckedIDBData = e.target.result
-          let allCheckedData = []
-          todoAllCheckedIDBData.forEach(each => {
-            each.isChecked = !isChecked
-            console.log('.....',each)
-            
-            allCheckedData.push(each)
-            setTodoData(allCheckedData)
-            db.transaction(["todoListData"], "readwrite")
+
+      todoAllCheckedIDB.onsuccess = (e) => {
+        let todoAllCheckedIDBData = e.target.result;
+        let allCheckedData = [];
+        todoAllCheckedIDBData.forEach((each) => {
+          each.isChecked = !isChecked;
+          console.log(".....", each);
+          allCheckedData.push(each);
+          setTodoData(allCheckedData);
+          db.transaction(["todoListData"], "readwrite")
             .objectStore("todoListData")
             .put(each);
-            setIsChecked(!isChecked)
-          })
-          // const todocheckedIDB = db
-          // .transaction(["todoListData"], "readwrite")
-          // .objectStore("todoListData")
-          // .getAll();
+          setIsChecked(!isChecked);
+        });
+        // const todocheckedIDB = db
+        // .transaction(["todoListData"], "readwrite")
+        // .objectStore("todoListData")
+        // .getAll();
         //   todocheckedIDB.onsuccess = (e) => {
-        //     let todocheckedIDBData = e.target.result 
-        //     
+        //     let todocheckedIDBData = e.target.result
+        //
         //   }
-        }
-
+      };
     };
   };
 
-  console.log('/////',todoData)
 
   return (
     <div className="todo-input-container">
@@ -268,15 +259,22 @@ const [isChecked, setIsChecked] = useState(false);
           </Form.Item>
         </Form>
         {isData ? (
-          <TodoList todoData={todoData} setTodoData={setTodoData} isChecked = {isChecked} setIsChecked = {setIsChecked}/>
+          <TodoList
+            todoData={todoData}
+            setTodoData={setTodoData}
+            isData={isData}
+          />
         ) : null}
 
-        <TodoItemsUpdate
-          AllItems={AllItems}
-          activeItems={activeItems}
-          completedItems={completedItems}
-          clearCompletedItems={clearCompletedItems}
-        />
+        {isData ? (
+          <TodoItemsUpdate
+            AllItems={AllItems}
+            activeItems={activeItems}
+            completedItems={completedItems}
+            clearCompletedItems={clearCompletedItems}
+            todoData={todoData}
+          />
+        ) : null}
       </div>
     </div>
   );

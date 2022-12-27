@@ -4,8 +4,7 @@ import "./App.css";
 import { TodoInput } from "./view/TodoInputBar/TodoInput";
 
 function App() {
-  const [todoData, setTodoData] = useState([]);
-
+  const [todoData, setTodoData] = useState([]); 
 
   const [isData, setIsData] = useState(false);
 
@@ -32,10 +31,9 @@ function App() {
           setIsData(true);
         }
       };
-    };
+    }; 
   },[]);
 
-  // console.log('todo :',todoData)
   return (
     <>
       <TodoInput

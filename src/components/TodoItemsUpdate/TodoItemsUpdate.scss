@@ -2,7 +2,10 @@
     display: flex;
     justify-content: space-between;
     box-sizing: border-box;
-    // border: 1px solid gray;
+}
+
+.items-count {
+    margin-left: 2%;
 }
 
 .todo-items-update-buttons {

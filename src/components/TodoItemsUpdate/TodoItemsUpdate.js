@@ -29,7 +29,7 @@ export const TodoItemsUpdate = ({
 
   return (
     <div className="items-update-container">
-      <Text level={4}> {setCount}items left</Text>
+      <Text level={4} className='items-count'> {setCount} items left</Text>
       <div>
         <Button className="todo-items-update-buttons" onClick={AllItems}>
           All

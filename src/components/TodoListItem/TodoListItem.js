@@ -71,7 +71,7 @@ export const TodoListItem = ({
   };
 
   return (
-    <List.Item key={item.id}>
+    <List.Item key={item.id} className='each-list-item'>
       <Checkbox
         checked={item.isChecked}
         onClick={() => {

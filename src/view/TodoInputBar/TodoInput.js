@@ -6,12 +6,17 @@ import { TodoList } from "../../components/TodoList/TodoList";
 import { TfiAngleDown } from "react-icons/tfi";
 import { TodoItemsUpdate } from "../../components/TodoItemsUpdate/TodoItemsUpdate";
 
-export const TodoInput = ({ todoData, setTodoData, isData, setIsData,isChecked,setIsChecked }) => {
+export const TodoInput = ({
+  todoData,
+  setTodoData,
+  isData,
+  setIsData,
+  isChecked,
+  setIsChecked,
+}) => {
   const { Text } = Typography;
 
   const [todoform] = Form.useForm();
-
-
 
   const content = <pre className="input-prefix">{"    "}</pre>;
 
@@ -229,7 +234,6 @@ export const TodoInput = ({ todoData, setTodoData, isData, setIsData,isChecked,s
     };
   };
 
-
   return (
     <div className="todo-input-container">
       <Text className="todo-title">todos</Text>
@@ -243,7 +247,7 @@ export const TodoInput = ({ todoData, setTodoData, isData, setIsData,isChecked,s
         >
           <Form.Item name="listitem">
             <Input
-              className="todo-search"
+              // className="todo-search"
               placeholder="What needs to be done?"
               prefix={
                 isData ? (
